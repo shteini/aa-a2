@@ -19,7 +19,7 @@ public class GuessWho
 	 */
 	public static void usage() {
 		System.err.println(progName + ": [-l <filename to write game logs to>] [game configuration filename] [chosen persons filename] [type of player1] [type of player2]");
-		System.err.println("<type of player> = <random | binary | custom>");
+		System.err.println("<type of player> = <random | binary>");
 		System.exit(1);
 	} // end of usage
 
@@ -98,10 +98,6 @@ public class GuessWho
                 case "binary":
                     player1 = new BinaryGuessPlayer(gameFilename, player1AssignedName);
                     break;
-                // Bonus Task (your customised guessing player)
-                case "custom":
-                    player1 = new CustomGuessPlayer(gameFilename, player1AssignedName);
-                    break;
                 default:
                     System.err.println("Uknown player 1 type option: " + player1Type);
                     usage();
@@ -117,10 +113,6 @@ public class GuessWho
                 // Task C (binary search based guessing player)
                 case "binary":
                     player2 = new BinaryGuessPlayer(gameFilename, player2AssignedName);
-                    break;
-                // Bonus Task (your customised guessing player)
-                case "custom":
-                    player2 = new CustomGuessPlayer(gameFilename, player2AssignedName);
                     break;
                 default:
                     System.err.println("Uknown player 2 type option: " + player2Type);
