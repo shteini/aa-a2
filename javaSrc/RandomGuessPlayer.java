@@ -7,8 +7,17 @@ import java.io.*;
  * You may implement/extend other interfaces or classes, but ensure ultimately
  * that this class implements the Player interface (directly or indirectly).
  */
-public class RandomGuessPlayer implements Player
+public class RandomGuessPlayer implements Player extends PlayerDefinition
 {
+    // Each player needs to know who they are from the players list
+    // which can be found through this.name as we extend PlayerDefinition
+    //
+    // They also need to hold a list of all other players in the game so
+    // that they can eliminate players as the guesses happen(minus themselves)
+    private ArrayList<PlayerDefinition> players;
+
+    // We need a list of all possible attributes and their values for this player to guess from, this could be the data/utility class with an accessible arraylist
+    // of all attributes and values
 
     /**
      * Loads the game configuration from gameFilename, and also store the chosen
@@ -24,6 +33,12 @@ public class RandomGuessPlayer implements Player
     public RandomGuessPlayer(String gameFilename, String chosenName)
         throws IOException
     {
+        //Load data in from file
+        //Assigns the name for this RandomGuessPlayer
+        //Using that name we can then find which values to load
+        //into this player
+        this.name = chosenName;
+
 
     } // end of RandomGuessPlayer()
 
