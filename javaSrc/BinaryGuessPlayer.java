@@ -40,11 +40,19 @@ public class BinaryGuessPlayer extends PlayerDefinition implements Player
 
         //attribute counter 
         counter = new AttributeCounter();
-        
+
     } // end of BinaryGuessPlayer()
 
 
     public Guess guess() {
+
+        if(gameData.players.size() == 1)
+        {
+            return new Guess(Guess.GuessType.Person, "", gameData.players.get(0).name);
+        }
+        else {
+            
+        }
 
         // placeholder, replace
         return new Guess(Guess.GuessType.Person, "", "Placeholder");
