@@ -32,13 +32,13 @@ public class Data
 
   public void removePlayersWithAttribute(String key, String value)
   {
-    for(PlayerDefinition player: players)
+    for(int i = 0; i < players.size(); i++)
     {
-      if(player.attributes.containsKey(key))
+      if(players.get(i).attributes.containsKey(key))
       {
-        if(player.attributes.get(key).equals(value))
+        if(players.get(i).attributes.get(key).equals(value))
         {
-          players.remove(players.indexOf(player));
+          players.remove(i);
         }
       }
     }
@@ -46,13 +46,13 @@ public class Data
 
   public void removePlayersWithoutAttribute(String key, String value)
   {
-    for(PlayerDefinition player: players)
+    for(int i = 0; i < players.size(); i++)
     {
-      if(player.attributes.containsKey(key))
+      if(players.get(i).attributes.containsKey(key))
       {
-        if(!(player.attributes.get(key).equals(value)))
+        if(!(players.get(i).attributes.get(key).equals(value)))
         {
-          players.remove(players.indexOf(player));
+          players.remove(i);
         }
       }
     }
@@ -74,11 +74,11 @@ public class Data
 
   public void removePlayerByName(String name)
   {
-    for(PlayerDefinition player : players)
+    for(int i = 0; i < players.size(); i++)
     {
-      if(player.name.equals(name))
+      if(players.get(i).name.equals(name))
       {
-        players.remove(players.indexOf(player));
+        players.remove(i);
       }
     }
   }
@@ -106,9 +106,9 @@ public class Data
   private void loadAttributes(BufferedReader br) throws IOException
   {
     String line;
-    List<String> values = new ArrayList<String>();
     while((line = br.readLine()) != null && !(line.isEmpty()))
     {
+      List<String> values = new ArrayList<String>();
       String[] attributes = line.split(" ");
       String key = attributes[0];
       for(int i = 1; i<attributes.length; i++)
@@ -130,19 +130,13 @@ public class Data
       }
       // Empty player object to fill
       PlayerDefinition newPlayer = new PlayerDefinition();
-      while (!(line.isEmpty()))
+   // If the line length is 2 it is a player name
+      newPlayer.name = line;
+
+      while ((line = br.readLine()) != null && !(line.isEmpty()))
       {
-        // If the line length is 2 it is a player name
-        if(line.length() == 2)
-        {
-          newPlayer.name = line;
-        }
-        else
-        {
-          String[] values = line.split(" ");
-          newPlayer.attributes.put(values[0], values[1]);
-        }
-        line = br.readLine();
+              String[] values = line.split(" ");
+              newPlayer.attributes.put(values[0], values[1]);
       }
       players.add(newPlayer);
     }
