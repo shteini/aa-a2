@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.*;
 
 /**
  * Random guessing player.
@@ -49,38 +50,97 @@ public class RandomGuessPlayer extends PlayerDefinition implements Player
 
     private void loadSelf(PlayerDefinition temp)
     {
-        this.name = temp.name;
-        this.hairLength = temp.hairLength;
-        this.glasses = temp.glasses;
-        this.facialHair = temp.facialHair;
-        this.eyeColor = temp.eyeColor;
-        this.pimples = temp.pimples;
-        this.hat = temp.hat;
-        this.hairColor = temp.hairColor;
-        this.noseShape = temp.noseShape;
-        this.faceShape = temp.faceShape;
+        // For each key in the hashmap we get the key and use it to get
+        // the value from the hashmap and save it in this (this object)
+        for(String key: temp.attributes.keySet())
+        {
+            this.attributes.put(key, temp.attributes.get(key));
+        }
         // Remove ourselves from the data set
         gameData.removePlayerByName(this.name);
     }
 
-    public Guess guess() {
-
-        // placeholder, replace
-        return new Guess(Guess.GuessType.Person, "", "Placeholder");
+    public Guess guess()
+    {
+      // If there is only 1 player left the guess will be that player by name
+      // otherwise we get a random attribute/value pair and make a guess
+      if(gameData.players.size() == 1)
+      {
+          return new Guess(Guess.GuessType.Person, "", gameData.players.get(0).name);
+      }
+      else
+      {
+        Map<String, String> guessMap = gameData.getRandomAttribute();
+        String key = new ArrayList<String>(guessMap.keySet()).get(0);
+        String value = guessMap.get(key);
+        return new Guess(Guess.GuessType.Attribute, key, value);
+      }
     } // end of guess()
 
 
-    public boolean answer(Guess currGuess) {
-
-        // placeholder, replace
-        return false;
+    public boolean answer(Guess currGuess)
+    {
+      // If the current guestype is Attribute check to see if this player has the key and value
+      // if so return true as the guess was correct otherwise method will return false
+      if(currGuess.getType() == Guess.GuessType.Attribute)
+      {
+        String guessKey = currGuess.getAttribute();
+        String guessValue = currGuess.getValue();
+        if(this.attributes.containsKey(guessKey))
+        {
+          if(this.attributes.get(guessKey).equals(guessValue))
+          {
+            return true;
+          }
+        }
+      }
+      else
+      {
+        // if the guess type was person check the name against this instance, if they
+        // are equal return true, otherwise method will return false
+        String name = currGuess.getValue();
+        if(this.name.equals(name))
+        {
+          return true;
+        }
+      }
+      return false;
     } // end of answer()
 
 
-	public boolean receiveAnswer(Guess currGuess, boolean answer) {
-
-        // placeholder, replace
+	public boolean receiveAnswer(Guess currGuess, boolean answer)
+  {
+    // If the guess type is person there are two cases
+    // 1 the person is correctly guessed in which case we return true
+    // 2 the person is incorrect. So we remove them from our Players list and
+    // return false
+    if(currGuess.getType() == Guess.GuessType.Person)
+    {
+      if(answer)
+      {
         return true;
-    } // end of receiveAnswer()
+      }
+      else
+      {
+        gameData.removePlayerByName(currGuess.getValue());
+        return false;
+      }
+    }
+    else
+    {
+      // If GuessType is Attribute and answer is true, remove all players that dont have the guessed
+      // attribute.
+      // If answer is false remove all players that do have guessed attribute
+      if(answer)
+      {
+        gameData.removePlayersWithoutAttribute(currGuess.getAttribute(), currGuess.getValue());
+      }
+      else
+      {
+        gameData.removePlayersWithAttribute(currGuess.getAttribute(), currGuess.getValue());
+      }
+    }
+    return false;
+  } // end of receiveAnswer()
 
 } // end of class RandomGuessPlayer
