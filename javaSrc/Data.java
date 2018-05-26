@@ -32,30 +32,34 @@ public class Data
 
   public void removePlayersWithAttribute(String key, String value)
   {
-    for(int i = 0; i < players.size(); i++)
-    {
-      if(players.get(i).attributes.containsKey(key))
+    Iterator itr = players.iterator();
+      while(itr.hasNext())
       {
-        if(players.get(i).attributes.get(key).equals(value))
+        PlayerDefinition currentPlayer = (PlayerDefinition)itr.next();
+        if(currentPlayer.attributes.containsKey(key))
         {
-          players.remove(i);
+          if(currentPlayer.attributes.get(key).equals(value))
+          {
+            itr.remove();
+          }
         }
       }
-    }
   }
 
   public void removePlayersWithoutAttribute(String key, String value)
   {
-    for(int i = 0; i < players.size(); i++)
-    {
-      if(players.get(i).attributes.containsKey(key))
+    Iterator itr = players.iterator();
+      while(itr.hasNext())
       {
-        if(!(players.get(i).attributes.get(key).equals(value)))
+        PlayerDefinition currentPlayer = (PlayerDefinition)itr.next();
+        if(currentPlayer.attributes.containsKey(key))
         {
-          players.remove(i);
+          if(!(currentPlayer.attributes.get(key).equals(value)))
+          {
+            itr.remove();
+          }
         }
       }
-    }
   }
 
   public PlayerDefinition getPlayerByName(String name)

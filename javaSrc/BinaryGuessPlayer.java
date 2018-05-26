@@ -36,10 +36,12 @@ public class BinaryGuessPlayer extends PlayerDefinition implements Player
 
         // Copy the data of the player with the chosenName to this instance
         // and remove it from the players list as we won't be guessing ourselves
+        this.name = chosenName;
         loadSelf(gameData.getPlayerByName(chosenName));
 
-        //attribute counter 
-        counter = new AttributeCounter(gameFilename);
+        //attribute counter
+        counter = new AttributeCounter(gameFilename, gameData);
+        counter.countAttributes(gameData);
 
     } // end of BinaryGuessPlayer()
 
@@ -56,7 +58,7 @@ public class BinaryGuessPlayer extends PlayerDefinition implements Player
         }
 
         // placeholder, replace
-        
+
     } // end of guess()
 
     private void loadSelf(PlayerDefinition temp)
@@ -117,6 +119,8 @@ public class BinaryGuessPlayer extends PlayerDefinition implements Player
         else
         {
           gameData.removePlayerByName(currGuess.getValue());
+          counter.wipeCounter(gameData);
+          counter.countAttributes(gameData);
           return false;
         }
       }
@@ -128,10 +132,14 @@ public class BinaryGuessPlayer extends PlayerDefinition implements Player
         if(answer)
         {
           gameData.removePlayersWithoutAttribute(currGuess.getAttribute(), currGuess.getValue());
+          counter.wipeCounter(gameData);
+          counter.countAttributes(gameData);
         }
         else
         {
           gameData.removePlayersWithAttribute(currGuess.getAttribute(), currGuess.getValue());
+          counter.wipeCounter(gameData);
+          counter.countAttributes(gameData);
         }
       }
       return false;
