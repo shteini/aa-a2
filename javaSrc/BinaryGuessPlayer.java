@@ -7,9 +7,10 @@ import java.io.*;
  * You may implement/extend other interfaces or classes, but ensure ultimately
  * that this class implements the Player interface (directly or indirectly).
  */
-public class BinaryGuessPlayer implements Player
+public class BinaryGuessPlayer extends PlayerDefinition implements Player
 {
-
+    private Data gameData;
+    private AttributeCounter counter;
     /**
      * Loads the game configuration from gameFilename, and also store the chosen
      * person.
@@ -21,10 +22,25 @@ public class BinaryGuessPlayer implements Player
      *    the "throws IOException" method specification, but make sure your
      *    implementation exits gracefully if an IOException is thrown.
      */
+
     public BinaryGuessPlayer(String gameFilename, String chosenName)
         throws IOException
     {
+        //Load data in from file
+        //Assigns the name for this RandomGuessPlayer
+        //Using that name we can then find which values to load
+        //into this player
+        gameData = new Data();
+        // Load all the players and attributes in
+        gameData.loadGameFile(gameFilename);
 
+        // Copy the data of the player with the chosenName to this instance
+        // and remove it from the players list as we won't be guessing ourselves
+        loadSelf(gameData.getPlayerByName(chosenName));
+
+        //attribute counter 
+        counter = new AttributeCounter();
+        
     } // end of BinaryGuessPlayer()
 
 
