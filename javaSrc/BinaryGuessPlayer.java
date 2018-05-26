@@ -39,7 +39,7 @@ public class BinaryGuessPlayer extends PlayerDefinition implements Player
         loadSelf(gameData.getPlayerByName(chosenName));
 
         //attribute counter 
-        counter = new AttributeCounter();
+        counter = new AttributeCounter(gameFilename);
 
     } // end of BinaryGuessPlayer()
 
@@ -51,25 +51,90 @@ public class BinaryGuessPlayer extends PlayerDefinition implements Player
             return new Guess(Guess.GuessType.Person, "", gameData.players.get(0).name);
         }
         else {
-            
+            String[] guess = counter.binaryGuess(gameData.players.size());
+            return new Guess(Guess.GuessType.Attribute, guess[0], guess[1]);
         }
 
         // placeholder, replace
-        return new Guess(Guess.GuessType.Person, "", "Placeholder");
+        
     } // end of guess()
 
+    private void loadSelf(PlayerDefinition temp)
+    {
+        // For each key in the hashmap we get the key and use it to get
+        // the value from the hashmap and save it in this (this object)
+        for(String key: temp.attributes.keySet())
+        {
+            this.attributes.put(key, temp.attributes.get(key));
+        }
+        // Remove ourselves from the data set
+        gameData.removePlayerByName(this.name);
+    }
 
-	public boolean answer(Guess currGuess) {
 
-        // placeholder, replace
+      public boolean answer(Guess currGuess)
+      {
+        // If the current guestype is Attribute check to see if this player has the key and value
+        // if so return true as the guess was correct otherwise method will return false
+        if(currGuess.getType() == Guess.GuessType.Attribute)
+        {
+          String guessKey = currGuess.getAttribute();
+          String guessValue = currGuess.getValue();
+          if(this.attributes.containsKey(guessKey))
+          {
+            if(this.attributes.get(guessKey).equals(guessValue))
+            {
+              return true;
+            }
+          }
+        }
+        else
+        {
+          // if the guess type was person check the name against this instance, if they
+          // are equal return true, otherwise method will return false
+          String name = currGuess.getValue();
+          if(this.name.equals(name))
+          {
+            return true;
+          }
+        }
         return false;
-    } // end of answer()
+      } // end of answer()
 
 
-	public boolean receiveAnswer(Guess currGuess, boolean answer) {
-
-        // placeholder, replace
-        return true;
+    public boolean receiveAnswer(Guess currGuess, boolean answer)
+    {
+      // If the guess type is person there are two cases
+      // 1 the person is correctly guessed in which case we return true
+      // 2 the person is incorrect. So we remove them from our Players list and
+      // return false
+      if(currGuess.getType() == Guess.GuessType.Person)
+      {
+        if(answer)
+        {
+          return true;
+        }
+        else
+        {
+          gameData.removePlayerByName(currGuess.getValue());
+          return false;
+        }
+      }
+      else
+      {
+        // If GuessType is Attribute and answer is true, remove all players that dont have the guessed
+        // attribute.
+        // If answer is false remove all players that do have guessed attribute
+        if(answer)
+        {
+          gameData.removePlayersWithoutAttribute(currGuess.getAttribute(), currGuess.getValue());
+        }
+        else
+        {
+          gameData.removePlayersWithAttribute(currGuess.getAttribute(), currGuess.getValue());
+        }
+      }
+      return false;
     } // end of receiveAnswer()
 
 } // end of class BinaryGuessPlayer

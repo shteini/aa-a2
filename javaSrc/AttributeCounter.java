@@ -1,7 +1,7 @@
-import java.io.*
-import java.util.*
+import java.io.*;
+import java.util.*;
 
-public class AtrributeCounter {
+public class AttributeCounter {
 
 	private Data gameData;
 	private Map<String, HashMap<String, Integer>> counter;
@@ -23,12 +23,15 @@ public class AtrributeCounter {
 
         /*New map of values & count, eg. (blue hair, number of people w/blue hair)
           Count initialized at 0*/
-        for(Map.Entry<String, ArrayList<String>> e: gameData.attributes.entrySet()) 
+        for(Map.Entry<String, List<String>> e: gameData.attributes.entrySet()) 
         {
 
             HashMap<String, Integer> currentAttributeValue = new HashMap<String, Integer>();
+
+            List<String> values = e.getValue();
+
             // loop through each value for current key
-            for(ArrayList<String> value : e.getValue()) 
+            for(String value : values) 
             {
 
             	//add the value to currentAttributeValue with .put and set 
@@ -50,12 +53,12 @@ public class AtrributeCounter {
 			for(Map.Entry<String, String> entry : player.attributes.entrySet()) 
 			{
 
-				String currentAtrrtibute = entry.getKey();
+				String currentAttribute = entry.getKey();
 				String attributeType = entry.getValue();
 
 				//increment the counter when a value exists 
-				int count = this.attrCount.get(currentAtrrtibute).get(attributeType);
-				this.counter.get(currentAttributeValue).replace(attributeType, count+1);
+				int count = this.counter.get(currentAttribute).get(attributeType);
+				this.counter.get(currentAttribute).replace(attributeType, count+1);
 			}
 		}
 	}
@@ -65,6 +68,7 @@ public class AtrributeCounter {
 
         String[] guessAttribute = new String[2];
         int halfPlayers = Math.floorDiv(playerCount,2);
+        outerLoop:
         for(Map.Entry<String, HashMap<String,Integer>> attribute: this.counter.entrySet()) {
 
             for(Map.Entry<String, Integer> value: attribute.getValue().entrySet())
@@ -73,10 +77,11 @@ public class AtrributeCounter {
                 {
                 	guessAttribute[0] = attribute.getKey();
                 	guessAttribute[1] = value.getKey();
-                	return guessAttribute;
                 }
+
             }
         }
+        return guessAttribute;
 	}
 
 }
