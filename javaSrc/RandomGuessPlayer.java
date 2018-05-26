@@ -44,6 +44,7 @@ public class RandomGuessPlayer extends PlayerDefinition implements Player
 
         // Copy the data of the player with the chosenName to this instance
         // and remove it from the players list as we won't be guessing ourselves
+        this.name = chosenName;
         loadSelf(gameData.getPlayerByName(chosenName));
 
     } // end of RandomGuessPlayer()
@@ -108,7 +109,7 @@ public class RandomGuessPlayer extends PlayerDefinition implements Player
     } // end of answer()
 
 
-	public boolean receiveAnswer(Guess currGuess, boolean answer)
+  public boolean receiveAnswer(Guess currGuess, boolean answer)
   {
     // If the guess type is person there are two cases
     // 1 the person is correctly guessed in which case we return true
